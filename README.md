@@ -1,6 +1,6 @@
 # 📊 Accounting App
 
-A modern accounting application for managing invoices, expenses, income, and financial reports.
+A simple accounting application for managing invoices, expenses, income, and financial reports.
 
 ![Version](https://img.shields.io/badge/version-1.0.0-blue.svg)
 ![Python](https://img.shields.io/badge/python-3.9+-blue.svg)
