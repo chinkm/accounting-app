@@ -62,3 +62,6 @@ streamlit run app/frontend.py
 
 Frontend: http://localhost:8501
 API Docs: http://localhost:8000/docs
+=======
+# accounting-app
+Simple Accounting App Full-stack accounting application for managing invoices, expenses, income, and financial reports.
