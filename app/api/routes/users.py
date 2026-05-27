@@ -38,7 +38,7 @@ async def create_user(user_data: UserCreate, db: Session = Depends(get_db)):
     # Create new user
     user = User(
         email=user_data.email,
-        password_hash=user_data.password_hash,
+        password_hash=user_data.password,
         name=user_data.name,
     )
     db.add(user)
@@ -63,7 +63,7 @@ async def update_user(
     
     # Update user using setatrribute for better maintainability
     setattr(user, "email", user_data.email)
-    setattr(user, "password_hash", user_data.password_hash)
+    setattr(user, "password_hash", user_data.password)
     setattr(user, "name", user_data.name)
     db.commit()
     db.refresh(user)

@@ -1,5 +1,6 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+from app.core.config import settings
 from app.api.routes import (
     users_router,
     companies_router,
@@ -9,6 +10,7 @@ from app.api.routes import (
     expenses_router,
     income_router,
     transactions_router,
+    auth_router
 )
 
 # Create FastAPI app
@@ -27,7 +29,7 @@ Base.metadata.create_all(bind=engine)
 # Add CORS middleware
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],  # In production, replace with specific origins
+    allow_origins=settings.cors_origins,  # In production, replace with specific origins
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -42,6 +44,7 @@ app.include_router(invoices_router, prefix="/api/invoices", tags=["Invoices"])
 app.include_router(expenses_router, prefix="/api/expenses", tags=["Expenses"])
 app.include_router(income_router, prefix="/api/income", tags=["Income"])
 app.include_router(transactions_router, prefix="/api/transactions", tags=["Transactions"])
+app.include_router(auth_router, prefix="/api/auth", tags=["Authentication"])
 
 # Root endpoint
 @app.get("/")

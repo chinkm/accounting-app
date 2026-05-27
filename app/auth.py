@@ -7,14 +7,14 @@ from fastapi.security import OAuth2PasswordBearer
 from sqlalchemy.orm import Session
 from app.database import get_db
 from app.models.user import User
-from app.schemas.user import UserCreate, UserResponse   
+#from app.schemas.user import UserCreate, UserResponse   
 from app.core.config import settings
 
 #password hashing context
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
 #OAuth2 scheme for token authentication
-oauth2_scheme = OAuth2PasswordBearer(tokenUrl="api/auth/login")
+oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/api/auth/login")
 
 #secret key and algorithm for JWT
 SECRET_KEY = settings.SECRET_KEY #should be a secure random string in production and stored in environment variables
@@ -27,7 +27,7 @@ def verify_password(plain_password:str, hashed_password: str)->bool:
 
 def get_password_hash(password:str)->str:
     #hash the provided password
-    return pwd_context.hash(password)
+    return pwd_context.hash(str(password))
 
 def create_access_token(data: dict, expires_delta: Optional[timedelta] = None)->str:
     #create a JWT access token with the provided data and expiration time

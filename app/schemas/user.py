@@ -4,14 +4,14 @@ from datetime import datetime
 
 class UserBase(BaseModel):
     email: EmailStr
-    password_hash: str
     name: str
 
 class UserCreate(UserBase):
-    pass
+    password: str # Password is required for creating a user
 
 class UserResponse(UserBase):
     id: int
+    is_active: bool
     created_at: datetime
     updated_at: Optional[datetime] = None
     

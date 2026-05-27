@@ -5,19 +5,20 @@ from sqlalchemy.orm import Session
 from app.database import get_db
 from app.schemas.user import UserCreate, UserResponse
 from datetime import timedelta
-from models.user import User
+from app.models.user import User
 from app.schemas.user import UserCreate, UserResponse
 from app.auth import (create_access_token, get_password_hash, verify_password, ACCESS_TOKEN_EXPIRE_MINUTES, get_current_user)
 
 from app.core.config import settings
 
-router = APIRouter(prefix="/auth", tags=["auth"])
+router = APIRouter(prefix="/auth",tags=["auth"])
 
 @router.post("/register", response_model=UserResponse, status_code=status.HTTP_201_CREATED)
 #Register a new user.
 # This endpoint allows a new user to register by providing their email, password, and name. It checks if the email or username is already registered, hashes the password, and creates a new user in the database.
 
 def register(user: UserCreate, db: Session = Depends(get_db)):
+    
     existing_user = db.query(User).filter(User.email == user.email).first()
     if existing_user:
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Email already registered")
@@ -27,8 +28,8 @@ def register(user: UserCreate, db: Session = Depends(get_db)):
     if existing_username:
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Username already taken")
     
-    hashed_password = get_password_hash(user.password_hash)
-    new_user = User(username=user.name, email=user.email, hashed_password=hashed_password, is_active=True)
+    hashed_password = get_password_hash(user.password)
+    new_user = User(name=user.name, email=user.email, password=hashed_password, is_active=True)
     db.add(new_user)
     db.commit()
     db.refresh(new_user)
@@ -50,7 +51,7 @@ def login(form_data: OAuth2PasswordRequestForm = Depends(), db: Session = Depend
         )
     
     # Verify password
-    if not verify_password(form_data.password, user.password_hash):
+    if not verify_password(form_data.password, user.password):
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="Incorrect username or password",

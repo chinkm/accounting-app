@@ -1,5 +1,7 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.routing import APIRoute
+from app.api.routes.auth import router as auth_router
 from app.api.routes import (
     users_router,
     companies_router,
@@ -41,6 +43,7 @@ app.include_router(invoices_router, prefix="/api/invoices", tags=["Invoices"])
 app.include_router(expenses_router, prefix="/api/expenses", tags=["Expenses"])
 app.include_router(income_router, prefix="/api/income", tags=["Income"])
 app.include_router(transactions_router, prefix="/api/transactions", tags=["Transactions"])
+app.include_router(auth_router, prefix="/api", tags=["Authentication"])
 
 # Root endpoint
 @app.get("/")
@@ -50,3 +53,9 @@ async def root():
         "version": "1.0.0",
         "docs": "/docs",
     }
+#Print the Real Routes to Debug    
+@app.on_event("startup")
+def print_routes():
+    for route in app.routes:
+        if isinstance(route, APIRoute):
+            print(f"Route Name: {route.name}, Path: {route.path}")
