@@ -3,6 +3,7 @@ from sqlalchemy.orm import relationship
 from app.models import Base
 from datetime import datetime
 
+
 class Company(Base):
     __tablename__ = "companies"
 
@@ -18,6 +19,5 @@ class Company(Base):
     invoices = relationship("Invoice", back_populates="company")
     expenses = relationship("Expense", back_populates="company")
     accounts = relationship("Account", back_populates="company")
-    income = relationship("Income", back_populates="company")
+    incomes = relationship("Income", back_populates="company")
     transactions = relationship("Transaction", back_populates="company")
-    

@@ -3,9 +3,10 @@ from sqlalchemy.orm import relationship
 from app.models import Base
 from datetime import datetime
 
+
 class Account(Base):
     __tablename__ = "accounts"
-    
+
     id = Column(Integer, primary_key=True, index=True)
     company_id = Column(Integer, ForeignKey("companies.id"), nullable=False)
     name = Column(String, nullable=False)
@@ -16,7 +17,6 @@ class Account(Base):
     updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
     # Relationships
     transactions = relationship("Transaction", back_populates="account")
-    income = relationship("Income", back_populates="account")
+    incomes = relationship("Income", back_populates="account")
     expenses = relationship("Expense", back_populates="account")
     company = relationship("Company", back_populates="accounts")
-    
