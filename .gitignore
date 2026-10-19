@@ -58,3 +58,5 @@ htmlcov/
 *.bak
 temp/
 tmp/
+*.txt
+*.json

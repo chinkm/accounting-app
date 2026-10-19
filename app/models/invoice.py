@@ -3,9 +3,10 @@ from sqlalchemy.orm import relationship
 from app.models import Base
 from datetime import datetime
 
+
 class Invoice(Base):
     __tablename__ = "invoices"
-    
+
     id = Column(Integer, primary_key=True, index=True)
     company_id = Column(Integer, ForeignKey("companies.id"), nullable=False)
     invoice_number = Column(String, nullable=False, unique=True)
@@ -19,4 +20,4 @@ class Invoice(Base):
     # Relationships
     company = relationship("Company", back_populates="invoices")
     # items = relationship("InvoiceItem", back_populates="invoice")
-    income = relationship("Income", back_populates="invoice")
+    incomes = relationship("Income", back_populates="invoice")

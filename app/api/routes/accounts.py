@@ -22,7 +22,6 @@ async def get_accounts(
         db.query(Account)
         .filter(
             Account.company_id == current_user.company_id,
-            Account.company_id == current_user.company_id,
         )
         .all()
     )
@@ -45,12 +44,6 @@ async def get_account(
     if not account:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND, detail="Account not found"
-        )
-
-    if getattr(account, "company_id") != getattr(current_user, "company_id"):
-        raise HTTPException(
-            status_code=status.HTTP_403_FORBIDDEN,
-            detail="You do not have permission to access this account",
         )
 
     return account
@@ -80,11 +73,11 @@ async def create_account(
 
     # Create new account
     account = Account(
+        company_id=current_user.company_id,
         name=account_data.name,
         type=account_data.type,
         description=account_data.description,
         balance=account_data.balance,
-        company_id=current_user.company_id,  # Associate the account with the current user's company
     )
     db.add(account)
     db.commit()
@@ -111,12 +104,6 @@ async def update_account(
             status_code=status.HTTP_404_NOT_FOUND, detail="Account not found"
         )
 
-    if getattr(account, "company_id") != getattr(current_user, "company_id"):
-        raise HTTPException(
-            status_code=status.HTTP_403_FORBIDDEN,
-            detail="You do not have permission to update this account",
-        )
-
     # Update account using setattr for better maintainability
     update_data = account_data.model_dump(exclude_unset=True)
     for key, value in update_data.items():
@@ -134,26 +121,21 @@ async def delete_account(
     db: Session = Depends(get_db),
     current_user: User = Depends(get_current_user),
 ):
+    if current_user.role != "admin":
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="You do not have permission to delete accounts",
+        )
+
     account = (
         db.query(Account)
         .filter(Account.id == account_id, Account.company_id == current_user.company_id)
         .first()
     )
+
     if not account:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND, detail="Account not found"
-        )
-
-    if getattr(account, "company_id") != getattr(current_user, "company_id"):
-        raise HTTPException(
-            status_code=status.HTTP_403_FORBIDDEN,
-            detail="You do not have permission to delete this account",
-        )
-
-    if getattr(current_user, "role") != "admin":
-        raise HTTPException(
-            status_code=status.HTTP_403_FORBIDDEN,
-            detail="You do not have permission to access this resource",
         )
 
     db.delete(account)

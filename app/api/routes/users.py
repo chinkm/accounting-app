@@ -5,7 +5,7 @@ from app.database import get_db
 from app.models.user import User
 from app.schemas.user import UserCreate, UserResponse
 
-router = APIRouter()
+router = APIRouter(prefix="/users", tags=["Users"])
 
 
 # GET all users
@@ -66,7 +66,7 @@ async def update_user(
 
     # Update user using setatrribute for better maintainability
     setattr(user, "email", user_data.email)
-    setattr(user, "password_hash", user_data.password)
+    setattr(user, "password", user_data.password)
     setattr(user, "name", user_data.name)
     setattr(
         user, "role", user_data.role if user_data.role else "user"

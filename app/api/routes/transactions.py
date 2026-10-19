@@ -5,11 +5,14 @@ from app.database import get_db
 from app.models import user
 from app.models.transaction import Transaction
 from app.models.user import User
-from app.schemas.transaction import TransactionCreate, TransactionResponse, TransactionUpdate
+from app.schemas.transaction import (
+    TransactionCreate,
+    TransactionResponse,
+    TransactionUpdate,
+)
 
+router = APIRouter(prefix="/transactions", tags=["Transactions"])
 
-
-router = APIRouter()
 
 # GET all users
 @router.get("/", response_model=List[TransactionResponse])
@@ -17,26 +20,35 @@ async def get_transactions(db: Session = Depends(get_db)):
     transactions = db.query(Transaction).all()
     return transactions
 
+
 # GET a single transaction by ID
 @router.get("/{transaction_id}", response_model=TransactionResponse)
 async def get_transaction(transaction_id: int, db: Session = Depends(get_db)):
     transaction = db.query(Transaction).filter(Transaction.id == transaction_id).first()
     if not transaction:
         raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND,
-            detail="Transaction not found"
+            status_code=status.HTTP_404_NOT_FOUND, detail="Transaction not found"
         )
     return transaction
 
+
 # POST create a new transaction
-@router.post("/", response_model=TransactionResponse, status_code=status.HTTP_201_CREATED)
-async def create_transaction(transaction_data: TransactionCreate, db: Session = Depends(get_db)):
+@router.post(
+    "/", response_model=TransactionResponse, status_code=status.HTTP_201_CREATED
+)
+async def create_transaction(
+    transaction_data: TransactionCreate, db: Session = Depends(get_db)
+):
     # Check if transaction already exists
-    existing_transaction = db.query(Transaction).filter(Transaction.description == transaction_data.description).first()
+    existing_transaction = (
+        db.query(Transaction)
+        .filter(Transaction.description == transaction_data.description)
+        .first()
+    )
     if existing_transaction:
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
-            detail="Transaction with this description already exists"
+            detail="Transaction with this description already exists",
         )
 
     # Create new transaction
@@ -50,7 +62,7 @@ async def create_transaction(transaction_data: TransactionCreate, db: Session = 
         payment_method=transaction_data.payment_method,
         status=transaction_data.status,
         category_id=transaction_data.category_id,
-        notes=transaction_data.notes
+        notes=transaction_data.notes,
     )
     db.add(transaction)
     db.commit()
@@ -58,20 +70,20 @@ async def create_transaction(transaction_data: TransactionCreate, db: Session = 
 
     return transaction
 
+
 # PUT update a transaction
 @router.put("/{transaction_id}", response_model=TransactionResponse)
 async def update_transaction(
     transaction_id: int,
     transaction_data: TransactionUpdate,
-    db: Session = Depends(get_db)
+    db: Session = Depends(get_db),
 ):
     transaction = db.query(Transaction).filter(Transaction.id == transaction_id).first()
     if not transaction:
         raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND,
-            detail="Transaction not found"
+            status_code=status.HTTP_404_NOT_FOUND, detail="Transaction not found"
         )
-    
+
     # Update transaction using setattr for better maintainability
     setattr(transaction, "account_id", transaction_data.account_id)
     setattr(transaction, "amount", transaction_data.amount)
@@ -88,17 +100,17 @@ async def update_transaction(
 
     return transaction
 
+
 # DELETE a transaction
 @router.delete("/{transaction_id}", status_code=status.HTTP_204_NO_CONTENT)
 async def delete_transaction(transaction_id: int, db: Session = Depends(get_db)):
     transaction = db.query(Transaction).filter(Transaction.id == transaction_id).first()
     if not transaction:
         raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND,
-            detail="Transaction not found"
+            status_code=status.HTTP_404_NOT_FOUND, detail="Transaction not found"
         )
-    
+
     db.delete(transaction)
     db.commit()
-    
+
     return None

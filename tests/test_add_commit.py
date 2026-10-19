@@ -11,10 +11,11 @@ db = SessionLocal()
 # Create a new user
 user = User(
     email="john@example.com",
-    password_hash="hashed_password",
+    password="JohnDoe123456",
     name="John Doe",
+    company_id=1,
     created_at=datetime.utcnow(),
-    updated_at=datetime.utcnow()
+    updated_at=datetime.utcnow(),
 )
 
 # Add the user to the database

@@ -5,7 +5,8 @@ from app.database import get_db
 from app.models.income import Income
 from app.schemas.income import IncomeCreate, IncomeUpdate, IncomeResponse
 
-router = APIRouter()
+router = APIRouter(prefix="/income", tags=["Income"])
+
 
 # GET all income
 @router.get("/", response_model=List[IncomeResponse])
@@ -13,16 +14,17 @@ async def get_income(db: Session = Depends(get_db)):
     income_list = db.query(Income).all()
     return income_list
 
+
 # GET a single income by ID
 @router.get("/{income_id}", response_model=IncomeResponse)
 async def get_income_item(income_id: int, db: Session = Depends(get_db)):
     income_item = db.query(Income).filter(Income.id == income_id).first()
     if not income_item:
         raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND,
-            detail="Income not found"
+            status_code=status.HTTP_404_NOT_FOUND, detail="Income not found"
         )
     return income_item
+
 
 # POST create a new income
 @router.post("/", response_model=IncomeResponse, status_code=status.HTTP_201_CREATED)
@@ -46,55 +48,54 @@ async def create_income(income_data: IncomeCreate, db: Session = Depends(get_db)
     db.add(income)
     db.commit()
     db.refresh(income)
-    
+
     return income
+
 
 # PUT update an income
 @router.put("/{income_id}", response_model=IncomeResponse)
 async def update_income(
-    income_id: int,
-    income_data: IncomeUpdate,
-    db: Session = Depends(get_db)
+    income_id: int, income_data: IncomeUpdate, db: Session = Depends(get_db)
 ):
     income = db.query(Income).filter(Income.id == income_id).first()
     if not income:
         raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND,
-            detail="Income not found"
+            status_code=status.HTTP_404_NOT_FOUND, detail="Income not found"
         )
-    
+
     # Update income using setattr
     if income_data.company_id is not None:
-        setattr(income, 'company_id', income_data.company_id)
+        setattr(income, "company_id", income_data.company_id)
     if income_data.category_id is not None:
-        setattr(income, 'category_id', income_data.category_id)
+        setattr(income, "category_id", income_data.category_id)
     if income_data.account_id is not None:
-        setattr(income, 'account_id', income_data.account_id)
+        setattr(income, "account_id", income_data.account_id)
     if income_data.amount is not None:
-        setattr(income, 'amount', income_data.amount)
+        setattr(income, "amount", income_data.amount)
     if income_data.description is not None:
-        setattr(income, 'description', income_data.description)
+        setattr(income, "description", income_data.description)
     if income_data.date is not None:
-        setattr(income, 'date', income_data.date)
+        setattr(income, "date", income_data.date)
     if income_data.invoice_id is not None:
-        setattr(income, 'invoice_id', income_data.invoice_id)
+        setattr(income, "invoice_id", income_data.invoice_id)
     if income_data.reference_number is not None:
-        setattr(income, 'reference_number', income_data.reference_number)
+        setattr(income, "reference_number", income_data.reference_number)
     if income_data.payment_method is not None:
-        setattr(income, 'payment_method', income_data.payment_method)
+        setattr(income, "payment_method", income_data.payment_method)
     if income_data.status is not None:
-        setattr(income, 'status', income_data.status)
+        setattr(income, "status", income_data.status)
     if income_data.tax_amount is not None:
-        setattr(income, 'tax_amount', income_data.tax_amount)
+        setattr(income, "tax_amount", income_data.tax_amount)
     if income_data.tax_rate is not None:
-        setattr(income, 'tax_rate', income_data.tax_rate)
+        setattr(income, "tax_rate", income_data.tax_rate)
     if income_data.notes is not None:
-        setattr(income, 'notes', income_data.notes)
-    
+        setattr(income, "notes", income_data.notes)
+
     db.commit()
     db.refresh(income)
-    
+
     return income
+
 
 # DELETE an income
 @router.delete("/{income_id}", status_code=status.HTTP_204_NO_CONTENT)
@@ -102,9 +103,8 @@ async def delete_income(income_id: int, db: Session = Depends(get_db)):
     income = db.query(Income).filter(Income.id == income_id).first()
     if not income:
         raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND,
-            detail="Income not found"
+            status_code=status.HTTP_404_NOT_FOUND, detail="Income not found"
         )
     db.delete(income)
     db.commit()
-    return None 
+    return None

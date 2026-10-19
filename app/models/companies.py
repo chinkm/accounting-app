@@ -21,3 +21,4 @@ class Company(Base):
     accounts = relationship("Account", back_populates="company")
     incomes = relationship("Income", back_populates="company")
     transactions = relationship("Transaction", back_populates="company")
+    users = relationship("User", back_populates="company")  # Relationship to User
