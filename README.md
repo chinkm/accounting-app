@@ -1,67 +1,52 @@
 # 📊 Accounting App
 
-A simple accounting application for managing invoices, expenses, income, and financial reports.
+A full-stack accounting application for managing invoices, expenses, income, and financial reports. Built with a FastAPI backend and a Streamlit frontend.
 
 ![Version](https://img.shields.io/badge/version-1.0.0-blue.svg)
 ![Python](https://img.shields.io/badge/python-3.9+-blue.svg)
+![FastAPI](https://img.shields.io/badge/FastAPI-005571?style=flat&logo=fastapi)
+![Streamlit](https://img.shields.io/badge/Streamlit-FF4B4B?style=flat&logo=Streamlit&logoColor=white)
+
+## 🎯 The Business Problem
+
+Most small-to-medium businesses use spreadsheets to track their accounting, which leads to version control issues, lack of security, and manual data entry. 
+
+I built this application to demonstrate how to create a secure, centralized backend for financial data. It uses a multi-tenant architecture, meaning it can securely handle data for multiple different companies without ever mixing their financial records.
 
 ## 📖 Features
 
-- ✅ User Authentication
-- ✅ Invoice Management
-- ✅ Expense Tracking
-- ✅ Income Tracking
-- ✅ Financial Reports
+- ✅ **User Authentication:** Secure JWT-based login and registration.
+- ✅ **Multi-Tenancy:** Data isolation ensures users only see their own company's data.
+- ✅ **Invoice Management:** Create, read, update, and delete invoices.
+- ✅ **Expense & Income Tracking:** Log and categorize cash flow.
+- ✅ **Financial Reports:** Generate summary data.
+- ✅ **Interactive Dashboard:** Visualize data using Streamlit and Plotly.
 
 ## 🚀 Tech Stack
 
-### Backend
-- **FastAPI** - Modern, fast web framework
-- **SQLAlchemy** - ORM for database operations
-- **SQLite** - Lightweight database
+### Backend (API)
+- **FastAPI** - High-performance web framework for building APIs.
+- **SQLAlchemy** - ORM for database operations.
+- **SQLite** - Lightweight relational database for development.
+- **Pydantic** - Data validation and settings management.
+- **Pytest** - Automated testing with in-memory DB isolation.
 
-### Frontend
-- **Streamlit** - Python-based web framework
-- **Pandas** - Data manipulation
-- **Plotly** - Interactive charts
+### Frontend (UI)
+- **Streamlit** - Python-based web framework for rapid UI development.
+- **Pandas** - Data manipulation.
+- **Plotly** - Interactive charts and dashboards.
 
-## 🚀 Quick Start
+## 📂 Project Structure
 
-### 1. Clone the Repository
-```bash
-git clone https://github.com/yourusername/accounting-app.git
-cd accounting-app
-
-**Purpose:** Shows people how to get started quickly.
-
----
-
-### **4. Installation Instructions**
-
-python -m venv venv
-source venv/bin/activate  # On Windows: venv\Scripts\activate
-
-pip install -r requirements.txt
-
-**Purpose:** Step-by-step guide to install and set up the app.
-
----
-
-### **5. Usage Examples**
-
-cp .env.example .env
-# Edit .env with your configuration
-
-python -c "from app.database import init_db; init_db()"
-
-# Start the backend
-uvicorn app.main:app --reload --host 0.0.0.0 --port 8000
-
-# Start the frontend
-streamlit run app/frontend.py
-
-Frontend: http://localhost:8501
-API Docs: http://localhost:8000/docs
-=======
-# accounting-app
-Simple Accounting App Full-stack accounting application for managing invoices, expenses, income, and financial reports.
+```text
+accounting-app/
+├── app/
+│   ├── api/          # API endpoints (auth, invoices, accounts, etc.)
+│   ├── core/         # Configuration and security (JWT)
+│   ├── models/       # SQLAlchemy database models
+│   ├── schemas/      # Pydantic validation schemas
+│   ├── services/     # Business logic
+│   └── frontend.py   # Streamlit dashboard
+├── tests/            # Pytest suite (conftest.py + route tests)
+├── requirements.txt
+└── .env.example
