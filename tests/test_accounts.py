@@ -1,16 +1,12 @@
-from fastapi.testclient import TestClient
-from main import app
 import uuid
 
-client = TestClient(app)
 
-
-def test_get_accounts_without_token_returns_401():
+def test_get_accounts_without_token_returns_401(client):
     response = client.get("/api/accounts/")
     assert response.status_code == 401
 
 
-def test_register_login_create_account():
+def test_register_login_create_account(client):
     unique_email = f"test_{uuid.uuid4().hex[:8]}@example.com"
     # Register a new user
     response = client.post(

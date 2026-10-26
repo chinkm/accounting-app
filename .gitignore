@@ -60,3 +60,4 @@ temp/
 tmp/
 *.txt
 *.json
+*.backup
